@@ -2,4 +2,4 @@
 
 While this source code is the complete NAZGUL mod it also lets you extract some valuable reversal information such as code to scrape the worlds entity list.
 An Entity object currently only consists of a Vec3 and a pseudo rotation.
-So if you came here for the reversal take a look at the detours.h and the defines.cpp
+So if you came here for the reversal take a look at the detour.h and the defines.cpp
