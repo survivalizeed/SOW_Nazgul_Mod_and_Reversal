@@ -9,6 +9,7 @@ namespace intern::OFFSETS {
 	std::vector<unsigned int> PLAYER_OFFSETS = { 0x28, 0x468, 0x20, 0x8, 0x38, 0x90, 0xAC };
 	uintptr_t TIME_FUNC_PARAM2_BASE_ADDRESS = 0x142A61130;
 	std::vector<unsigned int> TIME_FUNC_PARAM2_OFFSETS = { 0xC8, 0x10, 0x50, 0x40, 0xE8, 0x38, 0xB58 };
+	uintptr_t IS_MENU_PRESENT = 0x142A276F0;
 }
 
 namespace intern::GLOW {
@@ -28,4 +29,8 @@ namespace intern::ENTITY {
 	ENTITY_FUNC function = NULL;
 	ENTITY_FUNC dFunction = (ENTITY_FUNC)OFFSETS::ENTITY_FUNC_ADDRESS;
 	std::set<uintptr_t> entity_list;
+}
+
+namespace global {
+	bool eject = false;
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../pch.h"
 
 #define msg(msg, type)\
 MessageBoxA(NULL, msg, "NAZGUL - survivalizeed", type)
@@ -23,7 +22,7 @@ namespace intern::TIME {
 }
 namespace intern::ENTITY {
 	inline double __fastcall detour(__int64 a1) {
-		uintptr_t* ptr = (uintptr_t*)(*(uint64_t*)(a1 + 40) + 2940);
+		uintptr_t* ptr = (uintptr_t*)(*(uintptr_t*)(a1 + 40) + 2940);
 		entity_list.insert((uintptr_t)ptr);
 		return function(a1);
 	}

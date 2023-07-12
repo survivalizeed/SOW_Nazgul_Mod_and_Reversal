@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../pch.h"
 
 #define input(key)\
 GetAsyncKeyState(key) & 0x8000
@@ -17,6 +16,7 @@ namespace intern::OFFSETS {
 	extern std::vector<unsigned int> PLAYER_OFFSETS;
 	extern uintptr_t TIME_FUNC_PARAM2_BASE_ADDRESS;
 	extern std::vector<unsigned int> TIME_FUNC_PARAM2_OFFSETS;
+	extern uintptr_t IS_MENU_PRESENT;
 }
 
 namespace intern::GLOW {
@@ -113,16 +113,16 @@ namespace intern::FUNCTIONS{
 		return sqrtf(powf(v1->x - v2->x, 2) + powf(v1->y - v2->y, 2) + powf(v1->z - v2->z, 2));
 	}
 
-	inline Vec3 calc_vec_dir(const Vec3* const v1, const Vec3* const v2) {
+	inline Vec3 calc_vec_dir(const Vec3* const v1, const Vec3* const v2, float null_faktor) {
 		auto dist = calc_vec_dist(v1, v2);
-		if (dist < 60.f) return Vec3{ 0.f,0.f,0.f };
+		if (dist < null_faktor) return Vec3{ 0.f,0.f,0.f };
 		return Vec3{ (v2->x - v1->x) / dist, (v2->y - v1->y) / dist, (v2->z - v1->z) / dist };
 	}
 
-	inline float calc_vec_angle_horizontal(const Vec3* const v1, const Vec3* const v2) {
+	inline float calc_angle_player_camera_entity_horizontal(const Vec3* const v1, const Vec3* const v2) {
 		constexpr auto pi = 3.14159f;
 		Vec3* camera = (Vec3*)OFFSETS::CAMERA_ADDRESS;
-		Vec3 camv1_vec = calc_vec_dir(camera, v1);
+		Vec3 camv1_vec = calc_vec_dir(camera, v1, 5.f);
 		camv1_vec.x *= 1000.f;
 		camv1_vec.y *= 1000.f;
 		camv1_vec.z *= 1000.f;
@@ -135,4 +135,12 @@ namespace intern::FUNCTIONS{
 			angle_deg += 360;
 		return angle_deg;
 	}
+
+	inline Vec3 abs_vec_diff(const Vec3* const v1, const Vec3* const v2) {
+		return Vec3{ abs(v1->x - v2->x),abs(v1->y - v2->y) ,abs(v1->z - v2->z) };
+	}
+}
+
+namespace global {
+	extern bool eject;
 }

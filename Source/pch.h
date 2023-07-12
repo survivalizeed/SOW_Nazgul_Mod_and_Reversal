@@ -18,8 +18,21 @@
 #include <fstream>
 #include <math.h>
 #include <set>
+#include <thread>
+#include <dwmapi.h>
+#include <dwrite.h>
+#include <d2d1.h>
+#include <wincodec.h>
+#include <comdef.h>
 #include "lib/ini.h"
 #include "lib/internal/defines.h"
 #include "lib/internal/detour.h"
 #include "lib/modification.h"
+#include "lib/overlay/window.h"
+#include "lib/overlay/directX.h"
+#include "lib/overlay/overlay.h"
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "windowscodecs.lib")
+#pragma comment(lib, "dwmapi.lib")
+
 #endif //PCH_H

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../pch.h"
-
 namespace modification {
 	inline void modify_elven_run(uintptr_t* pos, __int64* time_func_param2, float elven_run_speed, int elven_run_smtd) {
 		using namespace intern::TYPES;
@@ -24,7 +22,7 @@ namespace modification {
 			counter = 0;
 		}
 		Vec3_XZ diff = *position - prevPos;
-		if (diff.len() > 16.5f && GLOW::blocker) {
+		if (diff.len() > 20.f && GLOW::blocker) {
 			time_counter = 0;
 			if (!time_trigger_once) {
 				TIME::detour(2, *time_func_param2);
@@ -46,41 +44,42 @@ namespace modification {
 		counter++;
 	}
 
-	inline void modify_entity_tp(uintptr_t* pos) {
+	inline void modify_entity_tp(uintptr_t* pos, float dash_max_distance) {
 		using namespace intern::TYPES;
 		using namespace intern::FUNCTIONS;
 		using namespace intern;
 		
-		if (pos == nullptr) return;
+		if (pos == nullptr || !GLOW::blocker) return;
 
-		auto min_dist = 9999999999.f;
+		auto max_dist = dash_max_distance;
 		Vec3* player = (Vec3*)pos;
 		Vec3* closest_entity = nullptr;
+		static std::vector<Vec3*> last_entitys;
 		for (auto& entity : ENTITY::entity_list) {
-			if (isBadReadPtr((void*)entity))
+			if (isBadReadPtr((void*)entity)) {
 				continue;
+			}
 			auto current_entity = (Vec3*)entity;
 			if (current_entity->x == 0.f || current_entity->y == 0.f || current_entity->z == 0.f)
 				continue;
 			auto dist = calc_vec_dist(player, current_entity);
-			if (dist < min_dist && dist > 60.f) {
-				auto angle = calc_vec_angle_horizontal(player, current_entity);
-				if (angle < 25 || angle > 335) {
-					min_dist = dist;
+			if (dist < max_dist && dist > 200.f && abs_vec_diff(player, current_entity).y < 400.f) {
+				auto angle = calc_angle_player_camera_entity_horizontal(player, current_entity);
+				if (angle < 30 || angle > 330) {
+					max_dist = dist;
 					closest_entity = current_entity;
 				}
 			}
-		}
+		}	
 		if (closest_entity != nullptr) {
-			for (int i = 0; i < 999999; ++i) {
-				auto dir = calc_vec_dir(player, closest_entity);
-				if (dir.x == 0.f && dir.y == 0.f && dir.z == 0.f)
-					break;
-				player->x += dir.x * 5.f;
-				player->y += dir.y * 5.f;
-				player->z += dir.z * 5.f;
+			auto dir = calc_vec_dir(closest_entity, player, 100.f);
+			for (int i = 0; i < 100; ++i) {
+				player->y = closest_entity->y + (dir.x * 100.f);
+				player->x = closest_entity->x + (dir.y * 100.f);
+				player->z = closest_entity->z + (dir.z * 100.f);
 				Sleep(1);
 			}
+			ENTITY::entity_list.clear();
 		}
 	}
 }
