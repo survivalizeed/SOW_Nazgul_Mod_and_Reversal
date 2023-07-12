@@ -8,15 +8,15 @@ GetAsyncKeyState(key) & 0x8000
 MessageBoxA(NULL, msg, "NAZGUL - survivalizeed", type)
 
 namespace intern::OFFSETS {
-	extern uintptr_t GLOW_FUNC_ADDRESS;
-	extern uintptr_t TIME_FUNC_ADDRESS;
-	extern uintptr_t ENTITY_FUNC_ADDRESS;
-	extern uintptr_t CAMERA_ADDRESS;
-	extern uintptr_t PLAYER_BASE_ADDRESS;
-	extern std::vector<unsigned int> PLAYER_OFFSETS;
-	extern uintptr_t TIME_FUNC_PARAM2_BASE_ADDRESS;
-	extern std::vector<unsigned int> TIME_FUNC_PARAM2_OFFSETS;
-	extern uintptr_t IS_MENU_PRESENT;
+	extern uintptr_t GLOW_FUNC_ADDRESS; // 8 bytes
+	extern uintptr_t TIME_FUNC_ADDRESS; // 8 bytes
+	extern uintptr_t ENTITY_FUNC_ADDRESS; // 8 bytes
+	extern uintptr_t CAMERA_ADDRESS; // 8 bytes
+	extern uintptr_t PLAYER_BASE_ADDRESS; // 8 bytes
+	extern std::vector<unsigned int> PLAYER_OFFSETS; // Result: 12 bytes
+	extern uintptr_t TIME_FUNC_PARAM2_BASE_ADDRESS; // 8 bytes
+	extern std::vector<unsigned int> TIME_FUNC_PARAM2_OFFSETS; // Result: 8 bytes
+	extern uintptr_t IS_MENU_PRESENT; // 1 byte
 }
 
 namespace intern::GLOW {
