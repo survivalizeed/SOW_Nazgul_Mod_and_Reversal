@@ -27,6 +27,12 @@ namespace intern::ENTITY {
 		return function(a1);
 	}
 }
+namespace intern::ELVENRUNFLAG {
+	inline char __fastcall detour(__int64 a1, int a2, __int64 a3, int a4) {
+		flags.insert((uintptr_t)(a1 + 8));
+		return function(a1, a2, a3, a4);
+	}
+}
 
 inline void hookFunctions() {
 	using namespace intern;
@@ -39,7 +45,10 @@ inline void hookFunctions() {
 	if (MH_CreateHook((void**)ENTITY::dFunction, &ENTITY::detour, (void**)&ENTITY::function) != MH_OK) {
 		msg("Unable to create Hook (sub_0x14024FEA0)", MB_ICONERROR);
 	}
+	if (MH_CreateHook((void**)ELVENRUNFLAG::dFunction, &ELVENRUNFLAG::detour, (void**)&ELVENRUNFLAG::function) != MH_OK) {
+		msg("Unable to create Hook (sub_0x14051A978)", MB_ICONERROR);
+	}
 	if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK) {
-		msg("Failed to enable hooks.", MB_ICONERROR);
+		msg("Failed to enable hooks", MB_ICONERROR);
 	}
 }

@@ -82,12 +82,22 @@ namespace overlay {
                         D2D1_SIZE_F size = pBitmap->GetSize();
                         D2D1_RECT_F destRect = D2D1::RectF(image.x, image.y, image.x + size.width * image.scale, image.y + size.height * image.scale);
                         D2D1::Matrix3x2F transform = D2D1::Matrix3x2F::Rotation(image.rotation, D2D1::Point2F(image.x + size.width / 2, image.y + size.height / 2)) *
-                            D2D1::Matrix3x2F::Scale(image.scale, image.scale, D2D1::Point2F(image.x, image.y));
+                            D2D1::Matrix3x2F::Scale(image.scale, image.scale, D2D1::Point2F(image.x + size.width / 2, image.y + size.height / 2));
                         m_pRenderTarget->SetTransform(transform);
                         m_pRenderTarget->DrawBitmap(pBitmap, destRect, 1.f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR);
                         pBitmap->Release();
                     }
                 }
+                m_pRenderTarget->EndDraw();
+            }
+        }
+
+        void Clear()
+        {
+            if (m_pRenderTarget)
+            {
+                m_pRenderTarget->BeginDraw();
+                m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF(0.f, 0.f, 0.f, 0.f)));;
                 m_pRenderTarget->EndDraw();
             }
         }

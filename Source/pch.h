@@ -24,13 +24,17 @@
 #include <d2d1.h>
 #include <wincodec.h>
 #include <comdef.h>
-#include "lib/ini.h"
+#include <chrono>
+#include "lib/misc/ini.h"
+#include "lib/misc/timer.h"
 #include "lib/internal/defines.h"
 #include "lib/internal/detour.h"
 #include "lib/modification.h"
 #include "lib/overlay/window.h"
 #include "lib/overlay/directX.h"
 #include "lib/overlay/overlay.h"
+#include "lib/SHA/SHA256.h"
+
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "windowscodecs.lib")
 #pragma comment(lib, "dwmapi.lib")

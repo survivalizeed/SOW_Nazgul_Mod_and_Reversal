@@ -7,14 +7,34 @@ namespace modification {
 		using namespace intern;
 
 		if (pos == nullptr || time_func_param2 == nullptr) return;
+		if (isBadReadPtr((void*)pos) || isBadReadPtr((void*)(pos + 4)) || isBadReadPtr((void*)(pos + 8)) ||isBadReadPtr((void*)time_func_param2))
+			return;
+
 
 		static Vec3_XZ prevPos{};
-		static Vec3_XZ defPosition{ 0.f, 0.f , 0.f };
 
 		static bool time_trigger_once = false;
-		static int time_counter = 0;
+		static Timer timer{};
 
 		static int counter = 0;
+
+		bool elvenRunFlag = false;
+
+		if (ELVENRUNFLAG::flags.size() > 28) // Overall there are 28 flags. The 11th is the correct one. (BYTE)
+			ELVENRUNFLAG::flags.clear();
+		int i = 0;
+		for (auto& iter : ELVENRUNFLAG::flags) {
+			if (i == 10) {
+				if (!isBadReadPtr((void*)iter)) {
+					auto flag = *(BYTE*)iter;
+					if (flag == 0)
+						elvenRunFlag = false;
+					else if(flag == 1)
+						elvenRunFlag = true;
+				}
+			}
+			++i;
+		}
 
 		Vec3_XZ* position = (Vec3_XZ*)pos;
 		if (counter == 2) {
@@ -22,11 +42,11 @@ namespace modification {
 			counter = 0;
 		}
 		Vec3_XZ diff = *position - prevPos;
-		if (diff.len() > 20.f && GLOW::blocker) {
-			time_counter = 0;
+		if (elvenRunFlag && GLOW::blocker) {
+			timer.start();
 			if (!time_trigger_once) {
 				TIME::detour(2, *time_func_param2);
-				TIME::blocker = true;
+				TIME::blocker = true;	
 				time_trigger_once = true;
 			}
 			diff.normalize();
@@ -34,12 +54,12 @@ namespace modification {
 			position->z = position->z + diff.z * elven_run_speed;
 		}
 		else if (TIME::blocker) {
-			if (time_counter == 200 + elven_run_smtd) {
+			if (timer.elapsedMilliseconds() >= elven_run_smtd  || !GLOW::blocker) {
 				TIME::blocker = false;
-				time_trigger_once = false;
+				time_trigger_once = false;			
 				TIME::detour(2, 0);
+				timer.stop();
 			}
-			time_counter++;
 		}
 		counter++;
 	}
@@ -56,7 +76,7 @@ namespace modification {
 		Vec3* closest_entity = nullptr;
 		static std::vector<Vec3*> last_entitys;
 		for (auto& entity : ENTITY::entity_list) {
-			if (isBadReadPtr((void*)entity)) {
+			if (isBadReadPtr((void*)entity) || isBadReadPtr((void*)(entity + 4)) || isBadReadPtr((void*)(entity + 8))) {
 				continue;
 			}
 			auto current_entity = (Vec3*)entity;
@@ -80,6 +100,30 @@ namespace modification {
 				Sleep(1);
 			}
 			ENTITY::entity_list.clear();
+		}
+	}
+
+	inline void modify_might(float* might) {
+		using namespace intern::TYPES;
+		using namespace intern::FUNCTIONS;
+		using namespace intern;
+
+		if (might == nullptr) return;
+		if (isBadReadPtr((void*)might)) return;
+
+		static float oldMight = 0.f;
+		static bool once = false;
+
+		if (GLOW::blocker && !once) {
+			oldMight = *might;
+			patch((void*)OFFSETS::MIGHT_DECREASE_OPCODE_ADDRESS, nop(8));
+			*might = 200;		
+			once = true;
+		}
+		if (!GLOW::blocker) {
+			*might = oldMight;
+			patch((void*)OFFSETS::MIGHT_DECREASE_OPCODE_ADDRESS, OPCODES::MIGHT_DECREASE_OPCODES);
+			once = false;
 		}
 	}
 }

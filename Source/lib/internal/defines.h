@@ -11,12 +11,20 @@ namespace intern::OFFSETS {
 	extern uintptr_t GLOW_FUNC_ADDRESS; // 8 bytes
 	extern uintptr_t TIME_FUNC_ADDRESS; // 8 bytes
 	extern uintptr_t ENTITY_FUNC_ADDRESS; // 8 bytes
+	extern uintptr_t ELVENRUNFLAG_FUNC_ADDRESS; // 8 bytes
 	extern uintptr_t CAMERA_ADDRESS; // 8 bytes
 	extern uintptr_t PLAYER_BASE_ADDRESS; // 8 bytes
 	extern std::vector<unsigned int> PLAYER_OFFSETS; // Result: 12 bytes
 	extern uintptr_t TIME_FUNC_PARAM2_BASE_ADDRESS; // 8 bytes
 	extern std::vector<unsigned int> TIME_FUNC_PARAM2_OFFSETS; // Result: 8 bytes
 	extern uintptr_t IS_MENU_PRESENT; // 1 byte
+	extern uintptr_t MIGHT_DECREASE_OPCODE_ADDRESS; // 8 bytes
+	extern uintptr_t MIGHT_BASE_ADDRESS; // 8 bytes
+	extern std::vector<unsigned int> MIGHT_OFFSETS; // Result: 4 bytes
+}
+
+namespace intern::OPCODES {
+	extern std::vector<BYTE> MIGHT_DECREASE_OPCODES;
 }
 
 namespace intern::GLOW {
@@ -39,6 +47,17 @@ namespace intern::ENTITY {
 	extern ENTITY_FUNC function;
 	extern ENTITY_FUNC dFunction;
 	extern std::set<uintptr_t> entity_list;
+}
+
+namespace intern::ELVENRUNFLAG {
+	typedef char(__fastcall* ELVENRUNFLAG_FUNC)(__int64, int, __int64, int);
+	extern ELVENRUNFLAG_FUNC function;
+	extern ELVENRUNFLAG_FUNC dFunction;
+	extern std::set<uintptr_t> flags;
+}
+
+namespace global {
+	extern bool eject;
 }
 
 namespace intern::TYPES {
@@ -80,6 +99,12 @@ namespace intern::FUNCTIONS{
 			*((BYTE*)addr + i) = bytes[i];
 		}
 		VirtualProtect(addr, bytes.size(), oldProtect, &oldProtect);
+	}
+
+	inline std::vector<BYTE> nop(int count) {
+		std::vector<BYTE> v;
+		for (int i = 0; i < count; ++i) v.push_back(0x90);
+		return v;
 	}
 
 	inline bool isBadReadPtr(void* p)
@@ -141,6 +166,3 @@ namespace intern::FUNCTIONS{
 	}
 }
 
-namespace global {
-	extern bool eject;
-}

@@ -33,11 +33,26 @@ namespace overlay {
 
     inline void display(Direct2DRenderer* pRenderer) {
         static bool once = false;
+        static bool once2 = false;
+        bool anyactive = false;
+
         if (!once) {
-            pRenderer->AddImage(L"F:\\SOW_SPLASH.jpg", 1463.f, 43.f);
+            pRenderer->AddImage(L"./plugins/Nazgul/Resource/SOW_SPLASH.jpg", 1463.f, 43.f);
             once = true;
         }
-        pRenderer->GetImage(0).active = ((BYTE)*(uintptr_t*)intern::OFFSETS::IS_MENU_PRESENT == 0) ? false : true;
-        pRenderer->Render();
+
+        {
+            pRenderer->GetImage(0).active = ((*(BYTE*)intern::OFFSETS::IS_MENU_PRESENT) == 0) ? false : true;
+            anyactive = pRenderer->GetImage(0).active;
+        }
+
+        if (anyactive) {
+            pRenderer->Render();
+            once2 = false;
+        }
+        else if (!once2) {
+            pRenderer->Clear();
+            once2 = true;
+        }
     }
 }
