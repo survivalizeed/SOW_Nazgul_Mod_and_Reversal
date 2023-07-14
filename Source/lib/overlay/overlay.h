@@ -34,7 +34,8 @@ namespace overlay {
     inline void display(Direct2DRenderer* pRenderer) {
         static bool once = false;
         static bool once2 = false;
-        bool anyactive = false;
+        static bool once3 = false;
+        static bool anyactive = true;
 
         if (!once) {
             pRenderer->AddImage(L"./plugins/Nazgul/Resource/SOW_SPLASH.jpg", 1463.f, 43.f);
@@ -43,7 +44,10 @@ namespace overlay {
 
         {
             pRenderer->GetImage(0).active = ((*(BYTE*)intern::OFFSETS::IS_MENU_PRESENT) == 0) ? false : true;
-            anyactive = pRenderer->GetImage(0).active;
+            if (pRenderer->GetImage(0).active)
+                once3 = true;
+            if (once3 && !pRenderer->GetImage(0).active)
+                anyactive = false;
         }
 
         if (anyactive) {

@@ -50,7 +50,7 @@ namespace intern::ENTITY {
 }
 
 namespace intern::ELVENRUNFLAG {
-	typedef char(__fastcall* ELVENRUNFLAG_FUNC)(__int64, int, __int64, int);
+	typedef char(__fastcall* ELVENRUNFLAG_FUNC)(__int64, __int64, __int64);
 	extern ELVENRUNFLAG_FUNC function;
 	extern ELVENRUNFLAG_FUNC dFunction;
 	extern std::set<uintptr_t> flags;

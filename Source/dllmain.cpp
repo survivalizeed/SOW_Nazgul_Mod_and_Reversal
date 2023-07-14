@@ -108,7 +108,7 @@ DWORD WINAPI MainThread(LPVOID param) {
 	
 	delete pRenderer;
 	PostMessage(window_hwnd, WM_DESTROY, 0, 0);
-	//FreeConsole();
+	FreeConsole();
 	Sleep(1000);
 	
 	MH_DisableHook(MH_ALL_HOOKS);

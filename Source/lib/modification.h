@@ -70,6 +70,7 @@ namespace modification {
 		using namespace intern;
 		
 		if (pos == nullptr || !GLOW::blocker) return;
+		if(isBadReadPtr((void*)pos) || isBadReadPtr((void*)(pos + 4)) || isBadReadPtr((void*)(pos + 8))) return;
 
 		auto max_dist = dash_max_distance;
 		Vec3* player = (Vec3*)pos;

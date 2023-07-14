@@ -28,9 +28,9 @@ namespace intern::ENTITY {
 	}
 }
 namespace intern::ELVENRUNFLAG {
-	inline char __fastcall detour(__int64 a1, int a2, __int64 a3, int a4) {
+	inline char __fastcall detour(__int64 a1, __int64 a2, __int64 a3) {
 		flags.insert((uintptr_t)(a1 + 8));
-		return function(a1, a2, a3, a4);
+		return function(a1, a2, a3);
 	}
 }
 
