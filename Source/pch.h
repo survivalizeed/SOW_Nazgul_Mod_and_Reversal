@@ -25,6 +25,7 @@
 #include <wincodec.h>
 #include <comdef.h>
 #include <chrono>
+#include <atomic>
 #include "lib/misc/ini.h"
 #include "lib/misc/timer.h"
 #include "lib/internal/defines.h"

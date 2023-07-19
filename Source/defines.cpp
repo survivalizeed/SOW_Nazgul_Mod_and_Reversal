@@ -43,6 +43,7 @@ namespace intern::ELVENRUNFLAG {
 	ELVENRUNFLAG_FUNC function = NULL;
 	ELVENRUNFLAG_FUNC dFunction = (ELVENRUNFLAG_FUNC)OFFSETS::ELVENRUNFLAG_FUNC_ADDRESS;
 	std::set<uintptr_t> flags;
+	std::atomic<bool> allow = true;
 }
 
 namespace global {

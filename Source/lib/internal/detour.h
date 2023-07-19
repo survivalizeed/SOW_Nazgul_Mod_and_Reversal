@@ -22,15 +22,15 @@ namespace intern::TIME {
 }
 namespace intern::ENTITY {
 	inline double __fastcall detour(__int64 a1) {
-		uintptr_t* ptr = (uintptr_t*)(*(uintptr_t*)(a1 + 40) + 2940);
-		entity_list.insert((uintptr_t)ptr);
+		entity_list.insert((uintptr_t)(*(uintptr_t*)(a1 + 40) + 2940));
 		return function(a1);
 	}
 }
 namespace intern::ELVENRUNFLAG {
-	inline char __fastcall detour(__int64 a1, __int64 a2, __int64 a3) {
-		flags.insert((uintptr_t)(a1 + 8));
-		return function(a1, a2, a3);
+	inline char __fastcall detour(__int64 a1, __int64 a2) {
+		if(allow)
+			flags.insert((uintptr_t)(a1 + 8));
+		return function(a1, a2);
 	}
 }
 

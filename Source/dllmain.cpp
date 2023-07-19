@@ -80,6 +80,7 @@ DWORD WINAPI MainThread(LPVOID param) {
 			if (!valid)
 				time_func_param2 = nullptr;
 
+			valid = false;
 			if (!isBadReadPtr((void*)OFFSETS::MIGHT_BASE_ADDRESS)) {
 				might = (float*)calcAddS(*(uintptr_t*)(OFFSETS::MIGHT_BASE_ADDRESS), OFFSETS::MIGHT_OFFSETS, valid);
 			}

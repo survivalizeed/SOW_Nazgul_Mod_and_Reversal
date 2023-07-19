@@ -19,8 +19,9 @@ namespace modification {
 		static int counter = 0;
 
 		bool elvenRunFlag = false;
-
-		if (ELVENRUNFLAG::flags.size() > 28) // Overall there are 28 flags. The 11th is the correct one. (BYTE)
+		
+		ELVENRUNFLAG::allow = false;
+		if (ELVENRUNFLAG::flags.size() > 28)
 			ELVENRUNFLAG::flags.clear();
 		int i = 0;
 		for (auto& iter : ELVENRUNFLAG::flags) {
@@ -35,6 +36,7 @@ namespace modification {
 			}
 			++i;
 		}
+		ELVENRUNFLAG::allow = true;
 
 		Vec3_XZ* position = (Vec3_XZ*)pos;
 		if (counter == 2) {
@@ -121,7 +123,7 @@ namespace modification {
 			*might = 200;		
 			once = true;
 		}
-		if (!GLOW::blocker) {
+		if (!GLOW::blocker && once) {
 			*might = oldMight;
 			patch((void*)OFFSETS::MIGHT_DECREASE_OPCODE_ADDRESS, OPCODES::MIGHT_DECREASE_OPCODES);
 			once = false;
