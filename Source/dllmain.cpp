@@ -13,6 +13,7 @@ void ini_init(float& elven_run_speed, int& elven_run_smtd, int& reload_key, floa
 	reload_key = std::stoi(ini["MISC"]["reload_key"]);
 	dash_max_distance = std::stof(ini["DASH"]["dash_max_distance"]);
 	dash_key = std::stoi(ini["DASH"]["dash_key"]);
+	global::xray_key = std::stoi(ini["NAZGUL"]["xray_key"]);
 }
 
 void integrity() {
@@ -41,9 +42,6 @@ DWORD WINAPI MainThread(LPVOID param) {
 	using namespace intern::TYPES;
 	using namespace intern::FUNCTIONS;
 	using namespace intern;
-
-	//AllocConsole();
-	//freopen("CONOUT$", "w", stdout);
 
 	MH_Initialize();
 	hookFunctions();
@@ -79,19 +77,13 @@ DWORD WINAPI MainThread(LPVOID param) {
 			}
 			if (!valid)
 				time_func_param2 = nullptr;
-
-			valid = false;
-			if (!isBadReadPtr((void*)OFFSETS::MIGHT_BASE_ADDRESS)) {
-				might = (float*)calcAddS(*(uintptr_t*)(OFFSETS::MIGHT_BASE_ADDRESS), OFFSETS::MIGHT_OFFSETS, valid);
-			}
-			if (!valid)
-				might = nullptr;
 		}
 
 		modification::modify_elven_run(position, time_func_param2, elven_run_speed, elven_run_smtd);
 
-		modification::modify_might(might);
-		
+		MIGHT::blocker = GLOW::blocker;
+		FOCUS::blocker = GLOW::blocker;
+
 		if (input(dash_key)) {
 			modification::modify_entity_tp(position, dash_max_distance);
 		}
@@ -100,10 +92,7 @@ DWORD WINAPI MainThread(LPVOID param) {
 			msg("Reloaded ini", MB_ICONINFORMATION);
 			Sleep(300);
 		}
-		//if (input(VK_NUMPAD0)) {
-		//	global::eject = true;
-		//	break;
-		//}
+
 		Sleep(1);
 	}
 	

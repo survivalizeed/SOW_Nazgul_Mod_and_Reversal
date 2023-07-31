@@ -216,8 +216,6 @@ namespace overlay {
                 MoveWindow(own, rc.left, rc.top, (rc.right - rc.left) - 8, (rc.bottom - rc.top) - 8, true);
             }
             prevRect = rc;
-            if (global::eject)
-                return;
             Sleep(1);
         }
     }

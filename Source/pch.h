@@ -29,6 +29,7 @@
 #include "lib/misc/ini.h"
 #include "lib/misc/timer.h"
 #include "lib/internal/defines.h"
+#include "lib/internal/scanner.h"
 #include "lib/internal/detour.h"
 #include "lib/modification.h"
 #include "lib/overlay/window.h"

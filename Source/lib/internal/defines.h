@@ -12,19 +12,15 @@ namespace intern::OFFSETS {
 	extern uintptr_t TIME_FUNC_ADDRESS; // 8 bytes
 	extern uintptr_t ENTITY_FUNC_ADDRESS; // 8 bytes
 	extern uintptr_t ELVENRUNFLAG_FUNC_ADDRESS; // 8 bytes
+	extern uintptr_t MIGHT_FUNC_ADDRESS; // 8 bytes
+	extern uintptr_t FOCUS_FUNC_ADDRESS; // 8 bytes
+
 	extern uintptr_t CAMERA_ADDRESS; // 8 bytes
 	extern uintptr_t PLAYER_BASE_ADDRESS; // 8 bytes
 	extern std::vector<unsigned int> PLAYER_OFFSETS; // Result: 12 bytes
 	extern uintptr_t TIME_FUNC_PARAM2_BASE_ADDRESS; // 8 bytes
 	extern std::vector<unsigned int> TIME_FUNC_PARAM2_OFFSETS; // Result: 8 bytes
 	extern uintptr_t IS_MENU_PRESENT; // 1 byte
-	extern uintptr_t MIGHT_DECREASE_OPCODE_ADDRESS; // 8 bytes
-	extern uintptr_t MIGHT_BASE_ADDRESS; // 8 bytes
-	extern std::vector<unsigned int> MIGHT_OFFSETS; // Result: 4 bytes
-}
-
-namespace intern::OPCODES {
-	extern std::vector<BYTE> MIGHT_DECREASE_OPCODES;
 }
 
 namespace intern::GLOW {
@@ -57,8 +53,22 @@ namespace intern::ELVENRUNFLAG {
 	extern std::atomic<bool> allow;
 }
 
+namespace intern::MIGHT {
+	typedef __int64(__fastcall* MIGHT_FUNC)(__int64, float, char);
+	extern MIGHT_FUNC function;
+	extern MIGHT_FUNC dFunction;
+	extern bool blocker;
+}
+
+namespace intern::FOCUS {
+	typedef void(__fastcall* FOCUS_FUNC)(__int64, float);
+	extern FOCUS_FUNC function;
+	extern FOCUS_FUNC dFunction;
+	extern bool blocker;
+}
+
 namespace global {
-	extern bool eject;
+	extern int xray_key;
 }
 
 namespace intern::TYPES {
@@ -90,7 +100,7 @@ namespace intern::TYPES {
 	};
 }
 
-namespace intern::FUNCTIONS{
+namespace intern::FUNCTIONS {
 	using namespace intern::TYPES;
 
 	inline void patch(void* addr, std::vector<BYTE> bytes) {
@@ -133,6 +143,57 @@ namespace intern::FUNCTIONS{
 		}
 		valid = true;
 		return addr + offsets[offsets.size() - 1];
+	}
+
+	inline uintptr_t scan_pattern(const char* signature)
+	{
+		static auto pattern_to_byte = [](const char* pattern)
+		{
+			auto bytes = std::vector<char>{};
+			auto start = const_cast<char*>(pattern);
+			auto end = const_cast<char*>(pattern) + strlen(pattern);
+
+			for (auto current = start; current < end; ++current)
+			{
+				if (*current == '?')
+				{
+					++current;
+					if (*current == '?')
+						++current;
+					bytes.push_back('\?');
+				}
+				else
+				{
+					bytes.push_back(strtoul(current, &current, 16));
+				}
+			}
+			return bytes;
+		};
+
+		MODULEINFO info;
+		GetModuleInformation(GetCurrentProcess(), GetModuleHandleA(NULL), &info, sizeof(MODULEINFO));
+		uintptr_t base = (uintptr_t)GetModuleHandleA(NULL);
+		uintptr_t sizeOfImage = (uintptr_t)info.SizeOfImage;
+		auto patternBytes = pattern_to_byte(signature);
+
+		uintptr_t patternLength = patternBytes.size();
+		auto data = patternBytes.data();
+
+		for (uintptr_t i = 0; i < sizeOfImage - patternLength; i++)
+		{
+			bool found = true;
+			for (uintptr_t j = 0; j < patternLength; j++)
+			{
+				char a = '\?';
+				char b = *(char*)(base + i + j);
+				found &= data[j] == a || data[j] == b;
+			}
+			if (found)
+			{
+				return base + i;
+			}
+		}
+		return NULL;
 	}
 
 	inline float calc_vec_dist(const Vec3* const v1, const Vec3* const v2) {

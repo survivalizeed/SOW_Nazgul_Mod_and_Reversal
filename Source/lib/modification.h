@@ -7,7 +7,7 @@ namespace modification {
 		using namespace intern;
 
 		if (pos == nullptr || time_func_param2 == nullptr) return;
-		if (isBadReadPtr((void*)pos) || isBadReadPtr((void*)(pos + 4)) || isBadReadPtr((void*)(pos + 8)) ||isBadReadPtr((void*)time_func_param2))
+		if (isBadReadPtr((void*)pos) || isBadReadPtr((void*)(pos + 4)) || isBadReadPtr((void*)(pos + 8)) || isBadReadPtr((void*)time_func_param2))
 			return;
 
 
@@ -19,7 +19,7 @@ namespace modification {
 		static int counter = 0;
 
 		bool elvenRunFlag = false;
-		
+
 		ELVENRUNFLAG::allow = false;
 		if (ELVENRUNFLAG::flags.size() > 28)
 			ELVENRUNFLAG::flags.clear();
@@ -30,7 +30,7 @@ namespace modification {
 					auto flag = *(BYTE*)iter;
 					if (flag == 0)
 						elvenRunFlag = false;
-					else if(flag == 1)
+					else if (flag == 1)
 						elvenRunFlag = true;
 				}
 			}
@@ -48,7 +48,7 @@ namespace modification {
 			timer.start();
 			if (!time_trigger_once) {
 				TIME::detour(2, *time_func_param2);
-				TIME::blocker = true;	
+				TIME::blocker = true;
 				time_trigger_once = true;
 			}
 			diff.normalize();
@@ -56,9 +56,9 @@ namespace modification {
 			position->z = position->z + diff.z * elven_run_speed;
 		}
 		else if (TIME::blocker) {
-			if (timer.elapsedMilliseconds() >= elven_run_smtd  || !GLOW::blocker) {
+			if (timer.elapsedMilliseconds() >= elven_run_smtd || !GLOW::blocker) {
 				TIME::blocker = false;
-				time_trigger_once = false;			
+				time_trigger_once = false;
 				TIME::detour(2, 0);
 				timer.stop();
 			}
@@ -103,30 +103,6 @@ namespace modification {
 				Sleep(1);
 			}
 			ENTITY::entity_list.clear();
-		}
-	}
-
-	inline void modify_might(float* might) {
-		using namespace intern::TYPES;
-		using namespace intern::FUNCTIONS;
-		using namespace intern;
-
-		if (might == nullptr) return;
-		if (isBadReadPtr((void*)might)) return;
-
-		static float oldMight = 0.f;
-		static bool once = false;
-
-		if (GLOW::blocker && !once) {
-			oldMight = *might;
-			patch((void*)OFFSETS::MIGHT_DECREASE_OPCODE_ADDRESS, nop(8));
-			*might = 200;		
-			once = true;
-		}
-		if (!GLOW::blocker && once) {
-			*might = oldMight;
-			patch((void*)OFFSETS::MIGHT_DECREASE_OPCODE_ADDRESS, OPCODES::MIGHT_DECREASE_OPCODES);
-			once = false;
 		}
 	}
 }
