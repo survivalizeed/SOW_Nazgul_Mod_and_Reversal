@@ -12,6 +12,8 @@ namespace modification {
 
 
 		static Vec3_XZ prevPos{};
+		
+		static int nigger;
 
 		static bool time_trigger_once = false;
 		static Timer timer{};
